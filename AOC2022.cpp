@@ -2,6 +2,7 @@
 #include "day_02/day_02.hpp"
 #include "day_03/day_03.hpp"
 #include "day_04/day_04.hpp"
+#include "day_05/day_05.hpp"
 
 int main()
 {
@@ -9,4 +10,5 @@ int main()
     day2_start("day_02/input.txt");
     day3_start("day_03/input.txt");
     day4_start("day_04/input.txt");
+    day5_start("day_05/input.txt");
 }
