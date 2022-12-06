@@ -12,18 +12,34 @@
 using namespace std;
 
 int checkUnigue(string code, int position, int length) {
+    bool unique = true;
+    /*
     string copy = code;
     sort(copy.begin() + position, copy.begin() + position + length);
-    bool unique = true;
+
     for (int j = 0; j < length - 1; j++) {
         if (copy[j + position] == copy[j + position + 1]) {
             unique = false;
             break;
         }
     }
+    */
+
+    int freq[256] = { 0 };
+    for (int j = 0; j < length; j++) {
+        char ch = code[j + position];
+        int count = freq[(int)ch];
+        if (count != 0) {
+            unique = false;
+            break;
+        }
+        freq[(int)ch]++;
+    }
+
     if (unique) {
         return position + length;
     }
+
     return -1;
 }
 void day6_start(string filename) {
