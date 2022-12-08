@@ -12,6 +12,8 @@
 using namespace std;
 
 void day8_start(string filename) {
+    // TODO: переписать, отказаться от карты видимости.
+    // Видимость искать для каждого элемента поиском по направлениям. (чтобы объединить первую и вторую часть)
     ifstream inputFile(filename);
     if (!inputFile) {
         cout << "Файл не найден Оо" << endl;
