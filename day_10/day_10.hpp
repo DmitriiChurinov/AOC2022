@@ -36,8 +36,6 @@ void day10_start(string filename) {
         int num = 0;
         inputFile >> s;
         if (!s.empty()) {
-            int np = cycleNum + num;
-
             if (s == "noop") {
                 cycles.push_back(cycleNum);
             }
