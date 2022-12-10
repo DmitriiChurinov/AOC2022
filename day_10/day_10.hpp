@@ -11,10 +11,10 @@
 
 using namespace std;
 
-void drawPixel(vector<char>* image, int pixelNum, int size) {
-    int offset = (size - 1) % 40;
+void drawPixel(vector<char>* image, int x, int cycleNumber) {
+    int pixelPosition = (cycleNumber - 1) % 40;
 
-    if (offset >= pixelNum && offset <= pixelNum + 2 || offset == 0 && pixelNum >= 38) {
+    if (pixelPosition >= x && pixelPosition <= x + 2 || pixelPosition == 0 && x >= 38) {
         image->push_back('#');
     }
     else {
