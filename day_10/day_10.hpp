@@ -11,15 +11,13 @@
 
 using namespace std;
 
-void drawPixel(vector<char>* image, int x, int cycleNumber) {
-    int pixelPosition = (cycleNumber - 1) % 40;
+char getPixel(int x, int cycleNumber) {
+    int pixelPosition = cycleNumber % 40;
 
     if (pixelPosition >= x && pixelPosition <= x + 2 || pixelPosition == 0 && x >= 38) {
-        image->push_back('#');
+        return '#';
     }
-    else {
-        image->push_back('.');
-    }
+    return '.';
 }
 void day10_start(string filename) {
     ifstream inputFile(filename);
@@ -31,9 +29,7 @@ void day10_start(string filename) {
     int part1{ -1 };
     int cycleNum = 1;
     vector<int> cycles;
-    vector<char> cyclesImage;
     cycles.push_back(cycleNum);
-    cyclesImage.push_back('.');
     while (!inputFile.eof()) {
         comandLine line;
         string s;
@@ -44,15 +40,11 @@ void day10_start(string filename) {
 
             if (s == "noop") {
                 cycles.push_back(cycleNum);
-                drawPixel(&cyclesImage, cycleNum, cycles.size());
             }
             if (s == "addx") {
                 inputFile >> num;
                 cycles.push_back(cycleNum);
-                drawPixel(&cyclesImage, cycleNum, cycles.size());
                 cycles.push_back(cycleNum);
-                drawPixel(&cyclesImage, cycleNum, cycles.size());
-
                 cycleNum += num;
             }
         }
@@ -66,13 +58,11 @@ void day10_start(string filename) {
         part1 += i * cycles[i];
     }
 
-
-
     cout << endl << "Day 10" << endl;
     cout << "part 1: " << part1 << endl;
     cout << "part 2: " << endl;
-    for (int i = 1; i < cyclesImage.size(); i++) {
-        cout << cyclesImage[i];
+    for (int i = 1; i < cycles.size(); i++) {
+        cout << getPixel(cycles[i], i);
         if (i % 40 == 0) {
             cout << endl;
         }
