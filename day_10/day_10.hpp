@@ -27,9 +27,9 @@ void day10_start(string filename) {
     }
 
     int part1{ -1 };
-    int cycleNum = 1;
+    int x = 1;
     vector<int> cycles;
-    cycles.push_back(cycleNum);
+    cycles.push_back(x);
     while (!inputFile.eof()) {
         comandLine line;
         string s;
@@ -37,13 +37,13 @@ void day10_start(string filename) {
         inputFile >> s;
         if (!s.empty()) {
             if (s == "noop") {
-                cycles.push_back(cycleNum);
+                cycles.push_back(x);
             }
             if (s == "addx") {
                 inputFile >> num;
-                cycles.push_back(cycleNum);
-                cycles.push_back(cycleNum);
-                cycleNum += num;
+                cycles.push_back(x);
+                cycles.push_back(x);
+                x += num;
             }
         }
         else {
