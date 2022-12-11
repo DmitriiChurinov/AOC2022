@@ -82,7 +82,14 @@ public:
             if (needDiv) {
                 item /= 3;
             }
-            if ((item % (long long)this->divisibleNumberForTest) == 0) {
+            else {
+                long long mods = 1;
+                for (int monkeyIndex = 0; monkeyIndex < monkeys.size(); monkeyIndex++) {
+                    mods *= monkeys[monkeyIndex].getDivisibleNumber();
+                }
+                item %= mods;
+            }
+            if (item % this->divisibleNumberForTest == 0) {
                 monkeys[this->monkeyForTrueResultTest].addItem(item);
             }
             else {
@@ -97,28 +104,31 @@ public:
     }
 
     void displayItems() {
-        cout << "Monkey " << this->monkeyNumber << ":";
+        cout << "Monkey " << this->monkeyNumber << "(" << this->operationCount << ")" << ":";
         if (this->items.size() == 0) {
             cout << " empty";
         }
         else {
-            for (list <long long> ::iterator it = this->items.begin(); it != this->items.end(); it++) {
+            for (list<long long>::iterator it = this->items.begin(); it != this->items.end(); it++) {
                 cout << " [" << (*it) << "]";
             }
         }
         cout << endl;
     }
-    long long operationCount = 0;
+    int operationCount = 0;
+    int getDivisibleNumber() {
+        return this->divisibleNumberForTest;
+    }
 private:
-    long long monkeyNumber;
+    int monkeyNumber;
     list<long long> items;
     string operation;
-    long long divisibleNumberForTest = 1;
-    long long monkeyForTrueResultTest = 0;
-    long long monkeyForFalseResultTest = 0;
+    int divisibleNumberForTest = 1;
+    int monkeyForTrueResultTest = 0;
+    int monkeyForFalseResultTest = 0;
     long long operationWork(long long  oldNumber) {
-        // Делаем допущение что у нас простые операции с одним положительным элементом в конце
-        // todo: переписать на полноценный парсер с операциями
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
+        // todo: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         long long  newNumber = oldNumber;
         vector<long long> numbers = getNumberFromString(this->operation);
         long long number = numbers.size() == 1 ? numbers[0] : oldNumber;
@@ -156,11 +166,11 @@ long long getBisnesLevel(vector<Monkey> *monkeyBisnes) {
 void day11_start(string filename) {
     ifstream inputFile(filename);
     if (!inputFile) {
-        cout << "Файл не найден Оо" << endl;
+        cout << "Р¤Р°Р№Р» РїРѕС‚РµСЂСЏР»СЃСЏ РѕРћ" << endl;
         return;
     }
 
-    int part1{ -1 }, part2{ -1 };
+    long long part1{ 0 }, part2{ 0 };
     int monkeyNumber = 0;
     vector<Monkey> saveMonkey;
     while (!inputFile.eof()) {
@@ -195,12 +205,15 @@ void day11_start(string filename) {
     }
     part1 = getBisnesLevel(&monkeys);
 
-    // part2 no work, need big decimal
     monkeys = saveMonkey;
     for (int step = 0; step < 10000; step++) {
+        //cout << "step: " << step + 1 << endl;
         for (int monkeyIndex = 0; monkeyIndex < monkeys.size(); monkeyIndex++) {
             monkeys[monkeyIndex].work(false);
         }
+        //for (int monkeyIndex = 0; monkeyIndex < monkeys.size(); monkeyIndex++) {
+        //    monkeys[monkeyIndex].displayItems();
+        //}
     }
 
     part2 = getBisnesLevel(&monkeys);

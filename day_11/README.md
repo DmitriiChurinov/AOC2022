@@ -212,8 +212,6 @@ Figure out which monkeys to chase by counting how many items they inspect over 2
 
 Your puzzle answer was 58056.
 
-The first half of this puzzle is complete! It provides one gold star: *
-
 --- Part Two ---
 You're worried you might not ever get your items back. So worried, in fact, that your relief that a monkey's inspection didn't damage an item no longer causes your worry level to be divided by three.
 
@@ -298,4 +296,4 @@ After 10000 rounds, the two most active monkeys inspected items 52166 and 52013 
 
 Worry levels are no longer divided by three after each item is inspected; you'll need to find another way to keep your worry levels manageable. Starting again from the initial state in your puzzle input, what is the level of monkey business after 10000 rounds?
 
-
+Your puzzle answer was 15048718170.
