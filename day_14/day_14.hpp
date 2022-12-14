@@ -16,7 +16,8 @@ const int MAX_HEIGTH = 1000;
 const int MAX_WIDTH = 1000;
 const int DUST_START_X = 500;
 const int DUST_START_Y = 0;
-const int OFFSET_MAP = 10;
+const int OFFSET_MAP_X = 50;
+const int OFFSET_MAP_Y = 2;
 const char OXIGEN_PIC = '.';
 const char DUST_START_PIC = '+';
 const char DUST_PIC = 'o';
@@ -103,8 +104,8 @@ void drawStoneLine(vector<point> stoneLine, vector<vector<char>>* worldMap, poin
 
 void displayMap(vector<vector<char>>* worldMap, point minPoint, point maxPoint, string title) {
     cout << title << endl;
-    for (int y = minPoint.y; y <= maxPoint.y + OFFSET_MAP; y++) {
-        for (int x = minPoint.x - OFFSET_MAP; x <= maxPoint.x + OFFSET_MAP; x++) {
+    for (int y = minPoint.y; y <= maxPoint.y + OFFSET_MAP_Y; y++) {
+        for (int x = minPoint.x - OFFSET_MAP_X; x <= maxPoint.x + OFFSET_MAP_X; x++) {
             cout << (*worldMap)[y][x];
         }
         cout << endl;
@@ -157,6 +158,7 @@ int emulate(vector<vector<char>>* worldMap, point maxWorldMapPoint) {
     return dustCount;
 }
 void day14_start(string filename) {
+    cout << endl << "Day 14" << endl;
     ifstream inputFile(filename);
     if (!inputFile) {
         cout << "Файл потерялся оО" << endl;
@@ -177,17 +179,17 @@ void day14_start(string filename) {
             drawStoneLine(stoneLine, &worldMap, &minWorldMapPoint, &maxWorldMapPoint);
         }
     }
-    cout << endl << "Day 14" << endl;
+
     worldMap2 = worldMap;
     part1 = emulate(&worldMap, maxWorldMapPoint);
-    //displayMap(&worldMap, minWorldMapPoint, maxWorldMapPoint, "End map state:");
+    displayMap(&worldMap, minWorldMapPoint, maxWorldMapPoint, "End map state for emulate 1:");
 
     maxWorldMapPoint.y += 2;
     for (int x = 0; x < MAX_WIDTH; x++) {
         worldMap2[maxWorldMapPoint.y][x] = STONE_PIC;
     }
     part2 = emulate(&worldMap2, maxWorldMapPoint);
-    //displayMap(&worldMap2, minWorldMapPoint, maxWorldMapPoint, "End map state:");
+    //displayMap(&worldMap2, minWorldMapPoint, maxWorldMapPoint, "End map state fo emulate 2:");
     cout << "part 1: " << part1 << endl;
     cout << "part 2: " << part2 << endl;
     inputFile.close();

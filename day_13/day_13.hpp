@@ -8,137 +8,113 @@
 #include <sstream>
 #include <algorithm>
 #include <list>
+#include <limits>
 
 using namespace std;
 
-int compareLines(string line1, string line2) {
-    bool normalize = true;
-    int position = -1;
-    while (normalize) {
-        position++;
+const string PACK2_STR = "[[2]]";
+const string PACK6_STR = "[[6]]";
 
-        if (position >= line1.size() || position >= line2.size()) {
-            normalize = false;
-            position = -1;
+class strangeLine {
+    public:
+        strangeLine(string str) {
+            this->line = str;
+            this->generateStrangeCode();
         }
-        else if (line1[position] == '[' && line2[position] == ']') {
-            normalize = false;
-            position = -2;
+        vector<int> getStrangeCode() {
+            return this->strangeCode;
+        };
+        strangeLine& operator= (const strangeLine& strange) {
+            this->line = strange.line;
+            this->strangeCode = strange.strangeCode;
+
+            return *this;
         }
-        else if (line2[position] == '[' && line1[position] == ']') {
-            normalize = false;
-            position = -3;
+        bool stringEqualCompare(const string& str) {
+            return this->line == str;
         }
-        else if (line1[position] != line2[position]) {
-            if (line1[position] == '[') {
-                line2.insert(position, 1, '[');
-                if (line2[position + 1] >= '0' && line2[position + 1] <= '9') {
-                    if (position + 2 < line2.size() && line2[position + 2] >= '0' && line2[position + 2] <= '9') {
-                        line2.insert(position + 3, 1, ']');
-                    }
-                    else {
-                        line2.insert(position + 2, 1, ']');
-                    }
+    private:
+        const int BRACE_POWER = 100;
+        const int TEN_POWER = 10;
+        string line;
+        vector<int> strangeCode;
+        void generateStrangeCode() {
+            string line = this->line;
+            vector <int> code;
+            int brace_power = 0;
+            for (int i = 0; i < line.size(); i++) {
+                if (line[i] == '[' && line[i + 1] == ']') {
+                    code.push_back(0);
+                    i++;
                 }
-                else {
-                    normalize = false;
-                    position = -2;
+                else if (line[i] == ']') {
+                    brace_power -= BRACE_POWER;
+                }
+                else if (line[i] == ',') {
+                    code.push_back(brace_power);
+                }
+                else if (line[i] >= '0' && line[i] <= '9') {
+                    int numberCode = (int)line[i];
+                    if (line[i + 1] >= '0' && line[i + 1] <= '9') {
+                        numberCode += (int)line[i + 1] + TEN_POWER;
+                        i++;
+                    }
+                    code.push_back(numberCode);
+                }
+                else if (line[i] == '[') {
+                    brace_power += BRACE_POWER;
                 }
             }
-            else if (line2[position] == '[') {
-                line1.insert(position, 1, '[');
-                if (line1[position + 1] >= '0' && line1[position + 1] <= '9') {
-                    if (position + 2 < line1.size() && line1[position + 2] >= '0' && line1[position + 2] <= '9') {
-                        line1.insert(position + 3, 1, ']');
-                    }
-                    else {
-                        line1.insert(position + 2, 1, ']');
-                    }
-                }
-                else {
-                    normalize = false;
-                    position = -3;
-                }
-            }
-            else {
-                normalize = false;
-            }
+            code.push_back(INT_MIN);
+            this->strangeCode = code;
         }
-    }
+};
+
+int compareStrangeLines(strangeLine* strangeLine1, strangeLine* strangeLine2) {
     int result = 0;
-    if (position == -1) {
-        result = 0;
-    }
-    else if (position == -2) {
-        result = 1;
-    }
-    else if (position == -3) {
-        result = -1;
-    }
-    else if (line1[position] >= '0' && line1[position] <= '9' && line2[position] >= '0' && line2[position] <= '9') {
-        int num1 = line1[position] - (int)'0';
-        int num2 = line2[position] - (int)'0';
-        if (line1[position + 1] >= '0' && line1[position + 1] <= '9') {
-            num1 *= 10;
-            num1 += line1[position + 1] - (int)'0';
+    vector<int> code1 = strangeLine1->getStrangeCode();
+    vector<int> code2 = strangeLine2->getStrangeCode();
+    int size = code1.size() > code2.size() ? code1.size() : code2.size();
+    for (int i = 0; i < size; i++) {
+        if (code1[i] != code2[i]) {
+            result = code1[i] < code2[i] ? -1 : 1;
+            break;
         }
-        if (line2[position + 1] >= '0' && line2[position + 1] <= '9') {
-            num2 *= 10;
-            num2 += line2[position + 1] - (int)'0';
-        }
-        if (num1 < num2) {
-            result = -1;
-        }
-        else if (num2 < num1){
-            result =  1;
-        }
-    }
-    else if (line1[position] == ']' && line2[position] == '\0') {
-        result = 1;
-    }
-    else if (line2[position] == ']' && line1[position] == '\0') {
-        result = -1;
-    }
-    else if (line2[position] == ']' && (line1[position] == ',' || line1[position] >= '0' && line1[position] <= '9')) {
-        result = 1;
-    }
-    else if (line1[position] == ']' && (line2[position] == ',' || line2[position] >= '0' && line2[position] <= '9')) {
-        result = -1;
     }
     return result;
 }
 
-void sortLines(vector<string> *lines) {
-    vector<string> copyLines = (*lines);
-    for (int i = 0; i < copyLines.size(); i++) {
-        string line = copyLines[i];
+void sortLines(vector<strangeLine>* strangeLines) {
+    vector<strangeLine> lines = (*strangeLines);
+    for (int i = 0; i < lines.size(); i++) {
+        strangeLine line = lines[i];
         int ind = i;
-        for (int j = i + 1; j < copyLines.size(); j++) {
-            string line2 = copyLines[j];
-            int res = compareLines(line2, line);
+        for (int j = i + 1; j < lines.size(); j++) {
+            strangeLine line2 = lines[j];
+            int res = compareStrangeLines(&line2, &line);
             if (res == -1) {
                 line = line2;
                 ind = j;
             }
         }
-        string tmp = copyLines[i];
-        copyLines[i] = line;
-        copyLines[ind] = tmp;
+        strangeLine tmp = lines[i];
+        lines[i] = line;
+        lines[ind] = tmp;
     }
-    (*lines) = copyLines;
+    (*strangeLines) = lines;
 }
 
 void day13_start(string filename) {
+    cout << endl << "Day 13" << endl;
     ifstream inputFile(filename);
     if (!inputFile) {
         cout << "Файл потерялся оО" << endl;
         return;
     }
 
-    //todo: переписать этот говнокод
     int part1{ 0 }, part2{ -1 };
     int index = 1;
-    vector<string> lines;
+    vector<strangeLine> lines;
     while (!inputFile.eof()) {
         string line1;
         getline(inputFile, line1);
@@ -146,29 +122,34 @@ void day13_start(string filename) {
         if (!line1.empty()) {
             string line2;
             getline(inputFile, line2);
-            int res = compareLines(line1, line2);
-            if (res <= 0) {
+            strangeLine strange1(line1);
+            strangeLine strange2(line2);
+            int res = compareStrangeLines(&strange1, &strange2);
+            if (res < 0) {
                 part1 += index;
             }
             index++;
-            lines.push_back(line1);
-            lines.push_back(line2);
+            lines.push_back(strange1);
+            lines.push_back(strange2);
         }
     }
-    lines.push_back("[[2]]");
-    lines.push_back("[[6]]");
+    cout << endl;
+    strangeLine strangePack2(PACK2_STR);
+    lines.push_back(strangePack2);
+    strangeLine strangePack6(PACK6_STR);
+    lines.push_back(strangePack6);
     sortLines(&lines);
     int pack2 = 0, pack6 = 0;
     for (int i = 0; i < lines.size(); i++) {
-        if (lines[i] == "[[2]]") {
+        if (lines[i].stringEqualCompare(PACK2_STR)) {
             pack2 = i + 1;
         }
-        if (lines[i] == "[[6]]") {
+        if (lines[i].stringEqualCompare(PACK6_STR)) {
             pack6 = i + 1;
         }
     }
     part2 = pack2 * pack6;
-    cout << endl << "Day 13" << endl;
+
     cout << "part 1: " << part1 << endl;
     cout << "part 2: " << part2 << endl;
     inputFile.close();
