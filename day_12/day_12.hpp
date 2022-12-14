@@ -28,8 +28,8 @@ public:
 
     void addEdge(int src, int dest)
     {
-        adjLists[src].push_back(dest);
-        //adjLists[dest].push_back(src);
+        //adjLists[src].push_back(dest);
+        adjLists[dest].push_back(src);
     }
 
     void BFS(int startVertex)
@@ -92,6 +92,7 @@ public:
 };
 
 void day12_start(string filename) {
+    cout << endl << "Day 12" << endl;
     ifstream inputFile(filename);
     if (!inputFile) {
         cout << "Файл потерялся оО" << endl;
@@ -162,19 +163,19 @@ void day12_start(string filename) {
         }
     }
 
-    g.BFS(startVertex);
-    vector<int> path = g.getMinPathFromBFS(endVertex, startVertex);
+    g.BFS(endVertex);
+    vector<int> path = g.getMinPathFromBFS(startVertex, endVertex);
     part1 = path.size();
 
     part2 = part1;
     for (int i = 0; i < a_index.size(); i++) {
-        g.BFS(a_index[i]);
-        path = g.getMinPathFromBFS(endVertex, a_index[i]);
+        //g.BFS(a_index[i]);
+        path = g.getMinPathFromBFS(a_index[i], endVertex);
         if (path.size() < part2 && path.size() != 0) {
             part2 = path.size();
         }
     }
-    cout << endl << "Day 12" << endl;
+
     cout << "part 1: " << part1 << endl;
     cout << "part 2: " << part2 << endl;
     inputFile.close();
