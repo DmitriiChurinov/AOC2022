@@ -12,6 +12,7 @@
 #include "day_12/day_12.hpp"
 #include "day_13/day_13.hpp"
 #include "day_14/day_14.hpp"
+#include "day_15/day_15.hpp"
 
 int main()
 {
@@ -29,4 +30,5 @@ int main()
     day12_start("day_12/input.txt");
     day13_start("day_13/input.txt");
     day14_start("day_14/input.txt");
+    day15_start("day_15/input.txt");
 }
