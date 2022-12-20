@@ -73,7 +73,11 @@ private:
 
             encreptedFile.erase(iter);
             iter = encreptedFile.cbegin();
-            int newPos = (encreptedFile.size() + pos + cur.value) % encreptedFile.size();
+            int newPos = pos + cur.value;
+            while (newPos < 0) {
+                newPos += encreptedFile.size();
+            }
+            newPos %= encreptedFile.size();
             if (newPos == 0) {
                 newPos = encreptedFile.size();
             }
@@ -84,8 +88,8 @@ private:
             }
             encreptedFile.insert(iter, cur);
 
-            cout << "step: " << count << endl;
-            displayEncryptedFile();
+            //cout << "step: " << count << endl;
+            //displayEncryptedFile();
         }
     }
     void displayEncryptedFile() {

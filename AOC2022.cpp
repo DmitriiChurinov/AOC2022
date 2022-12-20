@@ -18,11 +18,12 @@
 #include "day_17/day_17.hpp"
 #include "day_18/day_18.hpp"
 #include "day_19/day_19.hpp"
+#include "day_20/day_20.hpp"
 
 int main()
 {
     unsigned int start_time = clock();
-    
+    /*
     day1_start("day_01/input.txt");
     day2_start("day_02/input.txt");
     day3_start("day_03/input.txt");
@@ -42,7 +43,8 @@ int main()
     day17_start("day_17/input.txt");
     day18_start("day_18/input.txt");
     day19_start("day_19/input.txt");
-
+    */
+    day20_start("day_20/input.txt");
     unsigned int end_time = clock();
     unsigned int search_time = end_time - start_time;
     cout << endl << "Total time: " << search_time / 1000.0 << endl;
