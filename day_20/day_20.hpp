@@ -10,10 +10,13 @@ class GrovePositioningSystem {
 public:
     GrovePositioningSystem(string filename) {
         getEncryptedFile(filename);
-        encrepted();
     }
-    int getGroveSum() {
-        int sum = 0;
+    long long getGroveSum(int encuredCountCycle = 1, bool useDecryptionKey = false) {
+        for (int i = 0; i < encuredCountCycle; i++) {
+            clearEncreptedInfo();
+            encrepted(useDecryptionKey);
+        }
+        long long sum = 0;
         sum = getValueAfterZero(1000) + getValueAfterZero(2000) + getValueAfterZero(3000);
         //displayEncryptedFile();
         return sum;
@@ -24,8 +27,8 @@ private:
         bool needEncrepted = true;
     };
     list<element> encreptedFile;
-
-    int getValueAfterZero(int offset) {
+    long long decryptionKey = 811589153ll;
+    long long getValueAfterZero(int offset) {
         auto iter = encreptedFile.cbegin();
         int pos = 0;
         while ((*iter).value != 0) {
@@ -39,9 +42,14 @@ private:
             iter++;
             newPos--;
         }
-        return (*iter).value;
+        long long value = (*iter).value;
+        return value;
     }
-
+    void clearEncreptedInfo() {
+        for (auto element : encreptedFile) {
+            element.needEncrepted = true;
+        }
+    }
     void getEncryptedFile(string filename) {
         ifstream inputFile(filename);
         string line;
@@ -57,11 +65,11 @@ private:
         //displayEncryptedFile();
     }
 
-    void encrepted() {
+    void encrepted(bool useDecryptionKey = false) {
         int count = 0;
         while (count != encreptedFile.size()) {
             auto iter = encreptedFile.cbegin();
-            int pos = 0;
+            long long pos = 0;
             while (!(*iter).needEncrepted) {
                 iter++;
                 pos++;
@@ -69,11 +77,15 @@ private:
             element cur = *iter;
             cur.needEncrepted = false;
             count++;
-            int size = encreptedFile.size();
+            long long size = encreptedFile.size();
 
             encreptedFile.erase(iter);
             iter = encreptedFile.cbegin();
-            int newPos = pos + cur.value;
+            long long newPos = cur.value;
+            if (useDecryptionKey) {
+                newPos *= decryptionKey;
+            }
+            newPos += pos;
             while (newPos < 0) {
                 newPos += encreptedFile.size();
             }
@@ -104,5 +116,5 @@ void day20_start(string filename) {
     cout << endl << "Day 20" << endl;
     GrovePositioningSystem grovePositioningSystem(filename);
     cout << "part 1: "  << grovePositioningSystem.getGroveSum() << endl;
-    cout << "part 2: "  << endl;
+    cout << "part 2: "  << grovePositioningSystem.getGroveSum(10, true) << endl;
 }
