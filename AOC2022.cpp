@@ -1,4 +1,5 @@
-﻿#include "day_01/day_01.hpp"
+﻿#include <ctime>
+#include "day_01/day_01.hpp"
 #include "day_02/day_02.hpp"
 #include "day_03/day_03.hpp"
 #include "day_04/day_04.hpp"
@@ -13,9 +14,12 @@
 #include "day_13/day_13.hpp"
 #include "day_14/day_14.hpp"
 #include "day_15/day_15.hpp"
+#include "day_16/day_16.hpp"
+#include "day_17/day_17.hpp"
 
 int main()
 {
+    unsigned int start_time = clock();
     day1_start("day_01/input.txt");
     day2_start("day_02/input.txt");
     day3_start("day_03/input.txt");
@@ -31,4 +35,9 @@ int main()
     day13_start("day_13/input.txt");
     day14_start("day_14/input.txt");
     day15_start("day_15/input.txt");
+    day16_start("day_16/input.txt");
+    day17_start("day_17/input.txt");
+    unsigned int end_time = clock();
+    unsigned int search_time = end_time - start_time;
+    cout << endl << "Total time: " << search_time / 1000.0 << endl;
 }
