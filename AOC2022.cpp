@@ -16,6 +16,7 @@
 #include "day_15/day_15.hpp"
 #include "day_16/day_16.hpp"
 #include "day_17/day_17.hpp"
+#include "day_18/day_18.hpp"
 
 int main()
 {
@@ -37,6 +38,7 @@ int main()
     day15_start("day_15/input.txt");
     day16_start("day_16/input.txt");
     day17_start("day_17/input.txt");
+    day18_start("day_18/input.txt");
     unsigned int end_time = clock();
     unsigned int search_time = end_time - start_time;
     cout << endl << "Total time: " << search_time / 1000.0 << endl;
