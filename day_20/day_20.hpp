@@ -12,101 +12,89 @@ public:
         getEncryptedFile(filename);
     }
     long long getGroveSum(int encuredCountCycle = 1, bool useDecryptionKey = false) {
+        shafle = encreptedFile;
         for (int i = 0; i < encuredCountCycle; i++) {
-            clearEncreptedInfo();
             encrepted(useDecryptionKey);
+            //cout << "cycle: " << i + 1 << endl;
+            //displayEncryptedFile(useDecryptionKey);
         }
+
         long long sum = 0;
         sum = getValueAfterZero(1000) + getValueAfterZero(2000) + getValueAfterZero(3000);
+        if (useDecryptionKey) {
+            sum *= decryptionKey;
+        }
         //displayEncryptedFile();
         return sum;
     }
 private:
-    struct element {
-        int value = 0;
-        bool needEncrepted = true;
-    };
-    list<element> encreptedFile;
-    long long decryptionKey = 811589153ll;
+    vector<pair<long long, int>> encreptedFile;
+    vector<pair<long long, int>> shafle;
+
+    long long decryptionKey = 811589153LL;
     long long getValueAfterZero(int offset) {
-        auto iter = encreptedFile.cbegin();
+        auto iter = shafle.cbegin();
         int pos = 0;
-        while ((*iter).value != 0) {
+        while ((*iter).first != 0) {
             iter++;
             pos++;
         }
-        int newPos = (encreptedFile.size() + pos + offset) % encreptedFile.size();
-        iter = encreptedFile.cbegin();
-        while (newPos)
-        {
-            iter++;
-            newPos--;
-        }
-        long long value = (*iter).value;
+        int newPos = (pos + offset) % shafle.size();
+        long long value = shafle[newPos].first;
         return value;
     }
-    void clearEncreptedInfo() {
-        for (auto element : encreptedFile) {
-            element.needEncrepted = true;
-        }
-    }
+
     void getEncryptedFile(string filename) {
         ifstream inputFile(filename);
         string line;
+        int index = 0;
         while (getline(inputFile, line)) {
             istringstream iss(line);
             int number;
             iss >> number;
-            element el;
-            el.value = number;
+            pair<long long, int> el;
+            el.first = number;
+            el.second = index++;
             encreptedFile.push_back(el);
         }
         inputFile.close();
-        //displayEncryptedFile();
     }
 
     void encrepted(bool useDecryptionKey = false) {
-        int count = 0;
-        while (count != encreptedFile.size()) {
-            auto iter = encreptedFile.cbegin();
-            long long pos = 0;
-            while (!(*iter).needEncrepted) {
-                iter++;
-                pos++;
+        int stepCounts = encreptedFile.size();
+        for (int i = 0; i < stepCounts; i++) {
+            int pos = 0;
+            for (int j = 0; j < stepCounts; j++) {
+                if (shafle[j].second == encreptedFile[i].second) {
+                    pos = j;
+                    break;
+                }
             }
-            element cur = *iter;
-            cur.needEncrepted = false;
-            count++;
-            long long size = encreptedFile.size();
+            shafle.erase(shafle.cbegin() + pos);
 
-            encreptedFile.erase(iter);
-            iter = encreptedFile.cbegin();
-            long long newPos = cur.value;
+            auto element = encreptedFile[i];
+            long long newPos = element.first;
             if (useDecryptionKey) {
-                newPos *= decryptionKey;
+                newPos *= (decryptionKey % shafle.size());
+            }
+            while (newPos < 0) {
+                newPos += shafle.size();
             }
             newPos += pos;
-            while (newPos < 0) {
-                newPos += encreptedFile.size();
-            }
-            newPos %= encreptedFile.size();
+            newPos %= shafle.size();
+            
             if (newPos == 0) {
-                newPos = encreptedFile.size();
+                newPos = shafle.size();
             }
-            while (newPos)
-            {
-                iter++;
-                newPos--;
-            }
-            encreptedFile.insert(iter, cur);
+            shafle.insert(shafle.cbegin() + newPos, element);
 
-            //cout << "step: " << count << endl;
-            //displayEncryptedFile();
+            //cout << "step: " << i + 1 << endl;
+            //displayEncryptedFile(useDecryptionKey);
         }
     }
-    void displayEncryptedFile() {
-        for (auto element : encreptedFile) {
-            cout << element.value << " ";
+    void displayEncryptedFile(bool useDecryptionKey = false) {
+        for (auto element : shafle) {
+            cout << element.first * (useDecryptionKey ? decryptionKey : 1) << " ";
         }
         cout << endl;
     }
@@ -116,5 +104,6 @@ void day20_start(string filename) {
     cout << endl << "Day 20" << endl;
     GrovePositioningSystem grovePositioningSystem(filename);
     cout << "part 1: "  << grovePositioningSystem.getGroveSum() << endl;
+    // todo: подумать над оптимизацией
     cout << "part 2: "  << grovePositioningSystem.getGroveSum(10, true) << endl;
 }
