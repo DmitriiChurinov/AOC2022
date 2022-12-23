@@ -5,7 +5,7 @@
 #include <map>
 
 using namespace std;
-
+long long ans = 0;
 class PyroclasticFlow {
 public:
     PyroclasticFlow(string filename) {
@@ -39,27 +39,28 @@ public:
                 else {
                     currentShape = tmp;
                 }
-            }
-            if (currentYear % 10000 == 5100) {
+            }/*
+            if (currentYear > 500) {
+                cout << endl;
                 cout << "current year: " << currentYear << endl;
                 cout << "check year: " << currentYear - 100 << endl;
-                long long period = checkPeriod(currentYear - 100);
-                cout << "period height: " << period << endl;
-            }
+                //long long period = checkPeriod(currentYear, currentHeight);
+
+            }*/
         }
         return currentHeight;
     }
-    long long checkPeriod(long long height) {
+    long long checkPeriod(long long& year, long long& height) {
         long long period = -1;
-        int save[50][7];
-        for (long long i = height; i > height - 50; i--) {
+        int save[500][7];
+        for (long long i = year; i > year - 500; i--) {
             for (long long x = 0; x < 7; x++) {
-                save[height - i][x] = seen.count({ x, i });
+                save[year - i][x] = seen.count({ x, i });
             }
         }
-        for (long long i = height - 50; i >= 50; i --) {
+        for (long long i = year - 500; i >= 500; i --) {
             bool check = true;
-            for (long long j = 0; j < 50 && check; j++) {
+            for (long long j = 0; j < 500 && check; j++) {
                 for (long long x = 0; x < 7 && check; x++) {
                     if (save[j][x] != seen.count({ x, i - j })) {
                         check = false;
@@ -67,17 +68,17 @@ public:
                 }
             }
             if (check) {
-                period = height - i;
+                period = year - i;
                 cout << "|";
                 for (long long x = 0; x < 7; x++) {
-                    if (seen.count({ x, height })) {
+                    if (seen.count({ x, year })) {
                         cout << '#';
                     }
                     else {
                         cout << '.';
                     }
                 }
-                cout << "| " << height << " " << latest[height] << endl;
+                cout << "| " << year << " " << latest[year] << endl;
                 cout << "|";
                 for (long long x = 0; x < 7; x++) {
                     if (seen.count({ x, i })) {
@@ -88,9 +89,24 @@ public:
                     }
                 }
                 cout << "| " << i << " " << latest[i] << endl;
-                cout << "period year: " << latest[height] - latest[i] << endl;
-                long double answer = ((long double)(1000000000000LL - latest[i])) / ((long double)(latest[height] - latest[i])) * period - i;
-                cout << "answer 1000000000000: " << (long long) answer << endl;
+                cout << "period year: " << latest[year] - latest[i] << endl;
+                cout << "period height: " << period << endl;
+
+                long double answer = ((long double)(1000000000000LL - latest[i])) / ((long double)(latest[year] - latest[i])) * period + i;
+                long double answer2 = ((long double)(1000000000000LL - latest[i])) * period / ((long double)(latest[year] - latest[i])) + i;
+                ans += (long long)answer;
+                if (ans != (long long)answer) {
+                    ans /= 2;
+                }
+                cout << "answer  1000000000000: " << (long long)answer << endl;
+                cout << "answer2 1000000000000: " << (long long)answer2 << endl;
+                cout << "ans     1000000000000: " << ans << endl;
+                cout << "ans2    1000000000000: " << ((long long)(1000000000000LL - latest[i])) / (latest[year] - latest[i]) * (year - i) + i << endl;
+                cout << "ans3    1000000000000: " << ((long long)(1000000000000LL - latest[i])) * (year - i) / (latest[year] - latest[i]) + i << endl;
+                period = latest[year] - latest[i];
+                cout << "feature year: " << year + ((long long)(1000000000000LL - latest[i])) / period * period << endl;
+                cout << "feature height: " << height + ((long long)(1000000000000LL - latest[i])) / period * period * (latest[year] - latest[i]);
+
                 break;
             }
         }
@@ -169,8 +185,17 @@ void day17_start(string filename) {
     long long part1 = pyroclasticFlow.simulate(2022);
     //pyroclasticFlow.displaySimulate(2022);
     cout << "part 1: " << part1 << endl;
-    long long part2 = pyroclasticFlow.simulate(1000000000000);
+    // long part2 = pyroclasticFlow.simulate(1000000000000);
+    long part2 = pyroclasticFlow.simulate(6000);
 
     // TODO: Найти период и начала периода
     cout << "part 2: " << part2 << endl;
+    cout << "765 " << pyroclasticFlow.simulate(765) << endl;
+    cout << 1000000000000 / 1745 << endl;
+    cout << 1000000000000 - 1000000000000 / 1745 * 1745 << endl;
+    long long d = pyroclasticFlow.simulate(1000000000000 - 1000000000000 / 1745 * 1745);
+    cout << d << endl;
+    cout << 1000000000000 / 1745 * 2767 << endl;
+    cout << d + 1000000000000 / 1745 * 2767 << endl;
+
 }
