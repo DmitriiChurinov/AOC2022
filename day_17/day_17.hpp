@@ -44,22 +44,22 @@ public:
                 cout << "current year: " << currentYear << endl;
                 cout << "check year: " << currentYear - 100 << endl;
                 long long period = checkPeriod(currentYear - 100);
-                cout << "period: " << period << endl;
+                cout << "period height: " << period << endl;
             }
         }
         return currentHeight;
     }
     long long checkPeriod(long long height) {
         long long period = -1;
-        int save[10][7];
-        for (long long i = height; i > height - 10; i--) {
+        int save[50][7];
+        for (long long i = height; i > height - 50; i--) {
             for (long long x = 0; x < 7; x++) {
                 save[height - i][x] = seen.count({ x, i });
             }
         }
-        for (long long i = height - 10; i >= 10; i --) {
+        for (long long i = height - 50; i >= 50; i --) {
             bool check = true;
-            for (long long j = 0; j < 10 && check; j++) {
+            for (long long j = 0; j < 50 && check; j++) {
                 for (long long x = 0; x < 7 && check; x++) {
                     if (save[j][x] != seen.count({ x, i - j })) {
                         check = false;
@@ -88,6 +88,9 @@ public:
                     }
                 }
                 cout << "| " << i << " " << latest[i] << endl;
+                cout << "period year: " << latest[height] - latest[i] << endl;
+                long double answer = ((long double)(1000000000000LL - latest[i])) / ((long double)(latest[height] - latest[i])) * period - i;
+                cout << "answer 1000000000000: " << (long long) answer << endl;
                 break;
             }
         }
@@ -158,25 +161,6 @@ private:
 
 };
 
-/*
-part 2: guess that the rock pattern eventually becomes periodic
-find the period by searching for a specific pattern
-turns out the rock pattern repeats every 1695 rocks
-find two points equal to 1000000000000 modulo 1695
-extrapolate the height at 1000000000000 using the line that goes through these points
-pattern height rocks
-..###.. 609706 392351
-...#... 609705 392351
-.####.. 609704 392350 !!!
-....##. 609703 392349
-....##. 609702 392349
-..###.. 612340 394046
-...#... 612339 394046
-.####.. 612338 394045 !!!
-....##. 612337 394044
-....##. 612336 394044
-(1000000000000 - 392350) / 1695 * (612338 - 609704) + 609704
-*/
 void day17_start(string filename) {
     cout << endl << "Day 17" << endl;
     ifstream inputFile(filename);
@@ -185,12 +169,7 @@ void day17_start(string filename) {
     long long part1 = pyroclasticFlow.simulate(2022);
     //pyroclasticFlow.displaySimulate(2022);
     cout << "part 1: " << part1 << endl;
-    long long trash = 1000000000000;
-    long long part2 = pyroclasticFlow.simulate(100000);
-    //pyroclasticFlow.displaySimulate(5200);
-    cout << "3172: " << pyroclasticFlow.simulate(3172) << endl;
-    cout << "1427: " << pyroclasticFlow.simulate(1427) << endl;
-    cout << "6000: " << pyroclasticFlow.simulate(6000) << endl;
+    long long part2 = pyroclasticFlow.simulate(1000000000000);
 
     // TODO: Найти период и начала периода
     cout << "part 2: " << part2 << endl;
