@@ -25,12 +25,25 @@ public:
         AddMapInfo();
         for (int i = 0; i < stepCount; i++) {
             StepSimulation();
-            stringstream ss;
-            ss << "step " << i + 1;
-            DisplayMap(ss.str());
+            //stringstream ss;
+            //ss << "step " << i + 1;
+            //DisplayMap(ss.str());
             firstDirection++;
             firstDirection = firstDirection % directionCount;
         }
+    }
+    long long InfinityMapSimulation() {
+        firstDirection = 0;
+        map = mapSave;
+        elfs.clear();
+        AddMapInfo();
+        long long stepCount = 1;
+        while (StepSimulation()) {
+            stepCount++;
+            firstDirection++;
+            firstDirection = firstDirection % directionCount;
+        }
+        return stepCount;
     }
     int GetEmptyGround() {
         int minX = mapWidth, minY = mapHeight, maxX = 0, maxY = 0;
@@ -57,7 +70,7 @@ private:
     int mapHeight;
     int directionCount = 4;
     int firstDirection = 0;
-    int mapOffset = 10;
+    int mapOffset = 100;
     struct ElfPosition
     {
         int x;
@@ -112,9 +125,9 @@ private:
             }
         }
     }
-    void StepSimulation() {
+    bool StepSimulation() {
         doFirstHalf();
-        doSecondHalf();
+        return doSecondHalf();
     }
     void doFirstHalf() {
         for (auto& elf : elfs) {
@@ -168,7 +181,7 @@ private:
             }
         }
     }
-    void doSecondHalf() {
+    bool doSecondHalf() {
         bool endCheck = false;
         while (!endCheck) {
             endCheck = true;
@@ -176,10 +189,16 @@ private:
                 endCheck = endCheck && checkMove(elf);
             }
         }
+        bool stepMove = false;
 
         for (auto& elf : elfs) {
+            if (elf.newX != elf.x || elf.newY != elf.y) {
+                stepMove = true;
+            }
             moveElf(elf);
         }
+
+        return stepMove;
     }
     bool checkMove(ElfPosition& elf) {
         int count = 0;
@@ -226,8 +245,9 @@ private:
 void day23_start(string filename) {
     cout << endl << "Day 23" << endl;
     UnstableDiffusion  unstableDiffusion(filename);
-    unstableDiffusion.DisplayMap("Initial state:");
+    //unstableDiffusion.DisplayMap("Initial state:");
     unstableDiffusion.MapSimulation(10);
     cout << "part 1: " << unstableDiffusion.GetEmptyGround() << endl;
-    cout << "part 2: " << endl;
+    //todo: подумать как оптимизировать
+    cout << "part 2: " << unstableDiffusion.InfinityMapSimulation() << endl;
 }
