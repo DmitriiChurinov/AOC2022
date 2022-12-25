@@ -6,9 +6,6 @@
 
 using namespace std;
 
-const int dx[] = { 0, 1, 0, -1 };
-const int dy[] = { 1, 0, -1, 0 };
-
 class BlizzardBasin {
 public:
     int mapWidth;
@@ -36,11 +33,9 @@ public:
             for (int y = 0; y < mapHeight; y++) {
                 for (int x = 0; x < mapWidth; x++) {
                     if (existMove[y][x]) {
-                        checkMoveWithAdd(x, y, nextExistMove);
-                        checkMoveWithAdd(x - 1, y, nextExistMove);
-                        checkMoveWithAdd(x + 1, y, nextExistMove);
-                        checkMoveWithAdd(x, y - 1, nextExistMove);
-                        checkMoveWithAdd(x, y + 1, nextExistMove);
+                        for (auto dir : direction) {
+                            checkMoveWithAdd(x + dir.first, y + dir.second, nextExistMove);
+                        }
                     }
                 }
             }
@@ -173,4 +168,5 @@ void day24_start(string filename) {
     int path2 = blizzardBasin.Simulation(blizzardBasin.mapWidth - 2, blizzardBasin.mapHeight - 1, 1, 0);
     int path3 = blizzardBasin.Simulation(1, 0, blizzardBasin.mapWidth - 2, blizzardBasin.mapHeight - 1);
     cout << "part2: " << path1 + path2 + path3 << endl;
+    //cout << path1 << endl << path2 << endl << path3 << endl;
 }
